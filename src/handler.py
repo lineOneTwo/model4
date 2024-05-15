@@ -1,6 +1,6 @@
 from utils.context import Context, UserDict
 from utils import validator
-from src import account
+from src import account, artcle
 
 
 class Handler(object):
@@ -19,15 +19,28 @@ class Handler(object):
             pwd = validator.while_input("密码")
             email = validator.while_input("邮箱", validator.email)
             mobile = validator.while_input("手机号", validator.mobile)
-            if not account.register(user,pwd,nickname,mobile,email):
+            if not account.register(user, pwd, nickname, mobile, email):
                 print("注册失败")
             print("注册成功")
             return
+
     def publish_blog(self):
-        pass
+        if not self.LOGIN_USER_INFO.is_login:
+            print("请先登录")
+            return
+        while True:
+            title = validator.while_input("标题：")
+            text = validator.while_input("正文：")
+
+            if not artcle.publish(title, text, self.LOGIN_USER_INFO):
+                print("发布失败")
+                continue
+            print("发布成功")
+            return
 
     def blog_list(self):
-        pass
+        total_count = artcle.total_count()
+        data_list = artcle.page_list()
 
     def artice_detail(self):
         pass
