@@ -7,8 +7,30 @@ class Handler(object):
     LOGIN_USER_INFO = UserDict()
     NAV = []
 
+    def wrapper(self, method):
+        def inner(*args,**kwargs):
+            print(">".join(self.NAV).center(50,"*"))
+            res = method(*args,**kwargs)
+            self.NAV.pop(-1)
+            return res
+        return inner
+
+
     def login(self):
-        pass
+        while True:
+            user = input("用户名(Q/q退出)：")
+            if user.upper() == 'Q':
+                return
+            pwd = input("密码：")
+
+            user_dict = account.login(user, pwd)
+            if not user_dict:
+                print("登录失败")
+            print("登录成功")
+            self.LOGIN_USER_INFO.set_info(user_dict)
+
+            self.NAV.insert(0, self.LOGIN_USER_INFO.nickname)
+            return
 
     def register(self):
         while True:
@@ -40,7 +62,33 @@ class Handler(object):
 
     def blog_list(self):
         total_count = artcle.total_count()
-        data_list = artcle.page_list()
+        per_page_count = 10
+        # 获取总页数
+        max_page_num, div = divmod(total_count,per_page_count)
+        if div:
+            max_page_num += 1
+        if not max_page_num:
+            print("无数据")
+            return
+        # 跳转页面
+        current_page = 1
+        # 获取指定页面的数据
+        data_list = artcle.page_list(per_page_count,(current_page-1)*per_page_count)
+        # 循环获取文章列表数据
+        for row in data_list:
+            line = "{id}:{title}".format(**row)
+        # 输入页码 p1
+        text = input("请输入页码").strip()
+        if text.upper() == "Q":
+            return
+        # 跳转到指定页面
+        if text.startswith('p'):
+            page_num = int(text[1:])
+            if 0 < page_num < max_page_num:
+                current_page = page_num
+
+
+
 
     def artice_detail(self):
         pass
