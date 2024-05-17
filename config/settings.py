@@ -6,9 +6,9 @@ DB_POOL_CONN = {
     "setsession":[],
     "ping":0,
     "host": "127.0.0.1",
-    "port": "3306",
+    "port": 3306,
     "user": "root",
-    "password": "admin",
-    "database": "hdtjq2",
+    "password": "qweasd123",
+    "database": "blog",
     "charset": "utf8"
 }
